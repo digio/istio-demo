@@ -8,6 +8,10 @@ RESET  := $(shell tput -Txterm sgr0)
 
 
 TARGET_MAX_CHAR_NUM=20
+## install dependencies
+install:
+	yarn
+	brew install siege
 ## raw gradle build
 gradle-build:
 	gradle build -p microservice
@@ -59,6 +63,8 @@ install-ingress:
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/cloud-generic.yaml
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml
+traffic:
+	siege -t 100 -r 10 -c 2 -v demo.microservice.local/color
 ## install istio control plane
 istio-install:
 	# curl -L https://git.io/getLatestIstio | sh -
@@ -83,6 +89,7 @@ istio-install:
 		--set security.selfSigned=true \
 		--set global.enableTracing=true \
 		--set global.proxy.autoInject=disabled \
+		--set grafana.enabled=true \
 		--set kiali.enabled=true \
 		--set kiali.hub=kiali \
 		--set kiali.tag=latest \

@@ -85,6 +85,16 @@ export default class Presentation extends React.Component {
           </Heading>
           <App />
         </Slide>
+        <Slide align="flex-start flex-start" transition={['fade']} bgColor='secondary' textColor='primary'>
+          <div style={{ display: 'inline', textAlign: 'center', flexDirection: 'column', alignContent: 'center', width: 1100 }} >
+          <Heading size={1} fit caps lineHeight={1} textColor='white'>
+            Jaeger (Distributed Tracing)
+          </Heading>
+          </div>
+          <div style={{ marginTop: 100 }}>
+          <iframe width="100%" height={1100} src={"http://tracing.local:30047"} />
+          </div>
+        </Slide>
       </Deck>
     )
   }
