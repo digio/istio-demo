@@ -38,9 +38,10 @@ const theme = createTheme(
 
 export default class Presentation extends React.Component {
   render () {
+    const NODE_PORT=30047
     return (
       <Deck
-        contentWidth={1600}
+        contentWidth={1900}
         transition={['zoom', 'slide']}
         transitionDuration={500}
         theme={theme}
@@ -92,9 +93,37 @@ export default class Presentation extends React.Component {
           </Heading>
           </div>
           <div style={{ marginTop: 100 }}>
-          <iframe width="100%" height={1100} src={"http://tracing.local:30047"} />
+          <iframe width="100%" height={1100} src={`http://tracing.local:${NODE_PORT}`} />
           </div>
         </Slide>
+        <Slide align="flex-start flex-start" transition={['fade']} bgColor='secondary' textColor='primary'>
+          <div style={{ display: 'inline', textAlign: 'center', flexDirection: 'column', alignContent: 'center', width: 1100 }} >
+          <Heading size={1} fit caps lineHeight={1} textColor='white'>
+            Grafana (Metrics)
+          </Heading>
+          </div>
+          <div style={{ marginTop: 100 }}>
+          <iframe width="100%" height={1300} src={`http://grafana.local:${NODE_PORT}`} />
+          </div>
+        </Slide>
+        <Slide maxWidth={1600} transition={['fade']} align="flex-start flex-start" bgColor='secondary' textColor='primary'>
+          <Image src={Logo} width={300} style={{ animation: "App-logo-spin infinite 20s linear"}}/>
+          <Heading size={1} caps lineHeight={1} textColor='white'>
+            Canary Demo
+          </Heading>
+          <App />
+        </Slide>
+        <Slide align="flex-start flex-start" transition={['fade']} bgColor='secondary' textColor='primary'>
+          <div style={{ display: 'inline', textAlign: 'center', flexDirection: 'column', alignContent: 'center', width: 1100 }} >
+          <Heading size={1} fit caps lineHeight={1} textColor='white'>
+            Kiali (Mesh Observability)
+          </Heading>
+          </div>
+          <div style={{ marginTop: 100 }}>
+          <iframe width="100%" height={1300} src={`http://kiali.local:${NODE_PORT}/console/service-graph/istio-system?layout=cose-bilkent&duration=60&edges=requestsPerSecond&graphType=versionedApp`} />
+          </div>
+        </Slide>
+       
       </Deck>
     )
   }

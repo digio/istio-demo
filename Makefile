@@ -63,6 +63,8 @@ install-ingress:
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/cloud-generic.yaml
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml
+access-observability:
+	kubectl apply -f policy/istio/observability/
 traffic:
 	siege -t 100 -r 10 -c 2 -v demo.microservice.local/color
 ## install istio control plane
