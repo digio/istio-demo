@@ -1,0 +1,52 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.4.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.istiodemo'
+version = ''
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	compile 'org.springframework.boot:spring-boot-starter'
+	compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'io.micrometer:micrometer-registry-prometheus'
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+task download (type: Exec) {
+    description "Pre-downloads *most* dependencies"
+    doLast {
+        configurations.getAsMap().each { name, config ->
+            println "Retrieving dependencies for $name"
+            try {
+                config.files
+            } catch (e) {
+                project.logger.info e.message // some cannot be resolved, silentlyish skip them
+            }
+        }
+    }
+    // configurations.testCompile.files
+    // configurations.jacocoAgent.files
+    commandLine 'echo', 'Downloaded all dependencies'
+
+}
+

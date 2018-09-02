@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  width: 100%;
 }
 
 .App-logo {
@@ -13,7 +14,6 @@
   padding: 20px;
   color: white;
 }
-
 .App-title {
   font-size: 1.5em;
 }

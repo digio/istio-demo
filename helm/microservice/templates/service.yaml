@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ template "microservice.chart" . }}
+    environment: "{{ .Values.environment }}"
+    release: {{ .Release.Name }}
+    version: {{ .Values.version }}
+  name: {{ template "microservice.fullname" . }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  {{- if not (eq (.Values.service.httpsPort | int) 0) }}
+    - port: {{ .Values.service.httpsPort }}
+      targetPort: https
+      protocol: TCP
+      name: https
+  {{- end }}
+  selector:
+    app: {{ template "name" . }}

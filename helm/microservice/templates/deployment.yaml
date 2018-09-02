@@ -1,0 +1,71 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "microservice.fullname" . }}
+  labels:
+    app: {{ include "microservice.name" . }}
+    chart: {{ include "microservice.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    version: {{ .Values.version }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "microservice.name" . }}
+      release: {{ .Release.Name }}
+      version: {{ .Values.version }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "microservice.name" . }}
+        release: {{ .Release.Name }}
+        version: {{ .Values.version }}
+      annotations:
+      {{- if .Values.istio.enabled }}
+        sidecar.istio.io/inject: "true"
+      {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.httpPort }}
+            - name: management
+              containerPort: {{ .Values.service.managementPort }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.service.managementPort }}
+              port: management
+            {{- else }}
+              port: http
+            {{- end }}
+            timeoutSeconds: 3
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /healthz
+            {{- if .Values.service.managementPort }}
+              port: management
+            {{- else }}
+              port: http
+            {{- end }}
+            timeoutSeconds: 3
+            initialDelaySeconds: 20
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

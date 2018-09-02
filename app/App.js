@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import logo from './logo.svg';
+import logo from '../assets/logo.svg';
 import './App.css';
 
 const colorDict = {
@@ -26,10 +26,43 @@ const BoxViewWrapper = styled.div`
     white-space: nowrap;
     overflow: hidden;
   }
+
+  .refresh-button {
+    border-radius: 20px;
+    width: 160px;
+    height: 50px;
+    margin-top: 30px;
+    background: black;
+    color: white;
+    border: black;
+    outline: none;
+   
+  }
+  .refresh-button:hover {
+    box-shadow: 0 5px #666;
+  }
+  .refesh-button:focus {
+    text-decoration: none;
+    outline: none;
+    border: none;
+    box-shadow: none;
+    outline-style: none;
+    
+  }
+  .refresh-button:active {
+    text-decoration: none;
+    outline: none;
+    border: none;
+    box-shadow: none;
+    outline-style: none;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+  
 `
 const BoxWrapper = styled.div`
   background: ${props => colorDict[props.color]};
-  width: 80px;
+  width: 150px;
   height: 50px;
   margin: 10px;
   
@@ -53,57 +86,51 @@ const Box = (props) => {
 class App extends Component {
   constructor(props) {
     super(props)
-    const session = axios.create({
-      baseURL: 'http://ipt.istio.meintegration.net',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    });
-    const path = 'color'
-    const box_requests = Array(25)
-    for (let i = 0; i < box_requests.length; i++) {
-      box_requests[i] = axios.create({
-        baseURL: 'http://ipt.istio.meintegration.net',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        params: {
-          rando: `${Math.random()}`,
-        }
-      }).get(path)
-    }
     this.state = {
-      box_requests: box_requests,
+      box_requests: Array(25),
       boxes: []
     }
 
   }
 
   _loadData() {
-    axios.all(this.state.box_requests).then(response => this.setState({boxes: response.map( response => response.data)}))
+    const path = 'color'
+    const box_requests = Array(25)
+    for (let i = 0; i < box_requests.length; i++) {
+      box_requests[i] = axios.create({
+        baseURL: 'http://localhost:8080/api',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        params: {
+          rando: `${Math.random()}`,
+        },
+        crossdomain: true
+      }).get(path)
+    }
+    axios.all(box_requests).then(response => this.setState({boxes: response.map( response => response.data)}))
   }
   componentDidMount() {
     this._loadData()
+  }
+  reloadData() {
+    this._loadData()
+    this.forceUpdate()
   }
   render() {
     console.log(this.state.boxes)
     const boxView = this.state.boxes.map( (data, index) => <Box key={`${index}`} data={data} />)
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <div className="App-subTitle">
-            <h2>
-              Canary Demo
-            </h2>
-          </div>
-        </header>
         <BoxViewWrapper>
           <div className="box-view">
             {boxView}
           </div>
+          <button onClick={() => this.reloadData()} className="refresh-button">
+            Refresh
+          </button>
         </BoxViewWrapper>
       </div>
     );

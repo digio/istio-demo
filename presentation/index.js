@@ -40,6 +40,7 @@ export default class Presentation extends React.Component {
   render () {
     return (
       <Deck
+        contentWidth={1600}
         transition={['zoom', 'slide']}
         transitionDuration={500}
         theme={theme}
@@ -77,7 +78,11 @@ export default class Presentation extends React.Component {
             <Cite>Author</Cite>
           </BlockQuote>
         </Slide>
-        <Slide transition={['fade']} bgColor='secondary' textColor='primary'>
+        <Slide maxWidth={1600} transition={['fade']} align="flex-start flex-start" bgColor='secondary' textColor='primary'>
+          <Image src={Logo} width={300} style={{ animation: "App-logo-spin infinite 20s linear"}}/>
+          <Heading size={1} caps lineHeight={1} textColor='white'>
+            Canary Demo
+          </Heading>
           <App />
         </Slide>
       </Deck>

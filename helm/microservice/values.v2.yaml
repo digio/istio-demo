@@ -1,0 +1,41 @@
+# Default values for microservice.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+version: v2
+replicaCount: 1
+
+image:
+  repository: castlemilk/demo-microservice
+  tag: v2
+  pullPolicy: IfNotPresent
+
+nameOverride: "demo-microservice"
+fullnameOverride: ""
+istio:
+  enabled: true
+service:
+  type: ClusterIP
+  httpPort: 8080
+  # If zero, https port will not be exposed from Pod/Service
+  httpsPort: 0
+  # If zero, will assume same port as httpPort. Port used for management functionality such as livenessProbe, readinessProbe, and metrics
+  # NOTE: Port is never exposed from Service
+  managementPort: 8081
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

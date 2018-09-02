@@ -1,0 +1,108 @@
+SHELL := /bin/bash
+.PHONY: help
+# COLORS
+GREEN  := $(shell tput -Txterm setaf 2)
+YELLOW := $(shell tput -Txterm setaf 3)
+WHITE  := $(shell tput -Txterm setaf 7)
+RESET  := $(shell tput -Txterm sgr0)
+
+
+TARGET_MAX_CHAR_NUM=20
+## raw gradle build
+gradle-build:
+	gradle build -p microservice
+## build docker container
+build:
+	docker-compose -f microservice/docker-compose.yaml build
+
+## install helm
+helm-install:
+	brew install kubernetes-helm
+## check mtls status
+show-mtls:
+	./istio-1.0.1/bin/istioctl authn tls-check
+## show proxy synchronization status
+proxy-status:
+	./istio-1.0.1/bin/istioctl proxy-status
+## label namespace
+label-namespace:
+	kubectl label namespace development istio-injection=enabled
+	kubectl get namespace -L istio-injection
+## initialise kubernetes
+initialise:
+	sh init_kube.sh
+## deploy microservice v1
+deploy-v1:
+	kubectl apply -f policy/microservice-v1/
+## deploy microservice v2
+deploy-v2:
+	kubectl apply -f policy/microservice-v2/
+## delete all resources
+clean:
+	kubectl --ignore-not-found=true delete -f policy/microservice-v1/
+	kubectl --ignore-not-found=true delete -f policy/microservice-v2/
+	kubectl --ignore-not-found=true delete -f policy/istio/base
+	kubectl --ignore-not-found=true delete -f policy/istio/canary
+## reapply istio policies
+refresh-policy:
+	kubectl --ignore-not-found=true delete -f policy/istio/base
+	kubectl --ignore-not-found=true delete -f policy/istio/canary
+	kubectl apply -f policy/istio/base
+	kubectl apply -f policy/istio/canary/vs.100-v1.yaml
+## deploy canary with a 90-10 split
+canary:
+	kubectl apply -f policy/istio/canary/vs.90-v1.yaml
+## rollback canary deployment
+canary-rollback:
+	kubectl apply -f policy/istio/canary/vs.100-v1.yaml
+install-ingress:
+	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
+	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/cloud-generic.yaml
+	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml
+## install istio control plane
+istio-install:
+	# curl -L https://git.io/getLatestIstio | sh -
+	cd istio-1.0.1
+	export PATH=$PWD/bin:$PATH
+	# kubectl delete -f istio-1.0.1/install/kubernetes/helm/istio/templates/crds.yaml
+	helm upgrade --install istio istio-1.0.1/install/kubernetes/helm/istio --namespace istio-system \
+		--set ingress.enabled=true \
+		--set gateways.istio-ingressgateway.enabled=true \
+		--set gateways.istio-egressgateway.enabled=true \
+		--set gateways.istio-ingressgateway.type=NodePort \
+		--set gateways.istio-egressgateway.type=NodePort \
+		--set galley.enabled=true \
+		--set sidecarInjectorWebhook.enabled=true \
+		--set mixer.enabled=true \
+		--set prometheus.enabled=true \
+		--set global.hub=istio \
+		--set global.tag=1.0.0 \
+		--set global.imagePullPolicy=Always \
+		--set global.proxy.envoyStatsd.enabled=true \
+		--set global.mtls.enabled=true \
+		--set security.selfSigned=true \
+		--set global.enableTracing=true \
+		--set global.proxy.autoInject=disabled \
+		--set kiali.enabled=true \
+		--set kiali.hub=kiali \
+		--set kiali.tag=latest \
+		--set tracing.enabled=true
+
+
+
+## Show help
+help:
+	@echo ''
+	@echo 'Usage:'
+	@echo '  ${YELLOW}make${RESET} ${GREEN}<target>${RESET}'
+	@echo ''
+	@echo 'Targets:'
+	@awk '/^[a-zA-Z\-\_0-9]+:/ { \
+		helpMessage = match(lastLine, /^## (.*)/); \
+		if (helpMessage) { \
+			helpCommand = substr($$1, 0, index($$1, ":")-1); \
+			helpMessage = substr(lastLine, RSTART + 3, RLENGTH); \
+			printf "  ${YELLOW}%-$(TARGET_MAX_CHAR_NUM)s${RESET} ${GREEN}%s${RESET}\n", helpCommand, helpMessage; \
+		} \
+	} \
+	{ lastLine = $$0 }' $(MAKEFILE_LIST)
