@@ -123,7 +123,13 @@ export default class Presentation extends React.Component {
           <iframe width="100%" height={1300} src={`http://kiali.local:${NODE_PORT}/console/service-graph/istio-system?layout=cose-bilkent&duration=60&edges=requestsPerSecond&graphType=versionedApp`} />
           </div>
         </Slide>
-       
+        <Slide  transition={['fade']} bgColor='secondary' textColor='primary'>
+          <div style={{ display: 'inline', textAlign: 'center', flexDirection: 'column', alignContent: 'center', width: 1100 }} >
+          <Heading size={1} fit caps lineHeight={1} textColor='white'>
+           Q&A
+          </Heading>
+          </div>
+        </Slide>
       </Deck>
     )
   }
