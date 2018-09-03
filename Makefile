@@ -12,13 +12,23 @@ TARGET_MAX_CHAR_NUM=20
 install:
 	yarn
 	brew install siege
+	brew install kubernetres-helm
+	brew install kubernetes-cli
+	brew install nginx
+	curl -L https://git.io/getLatestIstio | sh -
+	sh init_kube.sh
+
+restart-nginx:
+	sudo nginx -s stop; sudo nginx
 ## raw gradle build
 gradle-build:
 	gradle build -p microservice
 ## build docker container
 build:
 	docker-compose -f microservice/docker-compose.yaml build
-
+## build docker container
+push:
+	docker-compose -f microservice/docker-compose.yaml push
 ## install helm
 helm-install:
 	brew install kubernetes-helm
@@ -30,10 +40,12 @@ proxy-status:
 	./istio-1.0.1/bin/istioctl proxy-status
 ## label namespace
 label-namespace:
+	# kubectl create namespace development
 	kubectl label namespace development istio-injection=enabled
 	kubectl get namespace -L istio-injection
 ## initialise kubernetes
 initialise:
+	curl -L https://git.io/getLatestIstio | sh -
 	sh init_kube.sh
 ## deploy microservice v1
 deploy-v1:
@@ -41,12 +53,27 @@ deploy-v1:
 ## deploy microservice v2
 deploy-v2:
 	kubectl apply -f policy/microservice-v2/
-## delete all resources
+## delete microservice-related resources
 clean:
 	kubectl --ignore-not-found=true delete -f policy/microservice-v1/
 	kubectl --ignore-not-found=true delete -f policy/microservice-v2/
 	kubectl --ignore-not-found=true delete -f policy/istio/base
 	kubectl --ignore-not-found=true delete -f policy/istio/canary
+## delete all resources
+clean-all:
+	kubectl --ignore-not-found=true delete -f policy/microservice-v1/
+	kubectl --ignore-not-found=true delete -f policy/microservice-v2/
+	kubectl --ignore-not-found=true delete -f policy/istio/base
+	kubectl --ignore-not-found=true delete -f policy/istio/canary
+	kubectl --ignore-not-found=true delete -f istio-1.0.1/install/kubernetes/helm/istio/templates/crds.yaml
+	helm del --purge istio
+	kubectl -n istio-system delete job --all
+	kubectl delete namespace istio-system
+## microservice policy
+microservice-policy:
+	kubectl apply -f policy/istio/base
+	kubectl apply -f policy/istio/canary
+	kubectl apply -f policy/istio/canary/vs.100-v1.yaml
 ## reapply istio policies
 refresh-policy:
 	kubectl --ignore-not-found=true delete -f policy/istio/base
@@ -69,11 +96,8 @@ traffic:
 	siege -t 100 -r 10 -c 2 -v demo.microservice.local/color
 ## install istio control plane
 istio-install:
-	# curl -L https://git.io/getLatestIstio | sh -
 	cd istio-1.0.1
-	export PATH=$PWD/bin:$PATH
-	# kubectl delete -f istio-1.0.1/install/kubernetes/helm/istio/templates/crds.yaml
-	helm upgrade --install istio istio-1.0.1/install/kubernetes/helm/istio --namespace istio-system \
+	helm upgrade --install --force istio istio-1.0.1/install/kubernetes/helm/istio --namespace istio-system \
 		--set ingress.enabled=true \
 		--set gateways.istio-ingressgateway.enabled=true \
 		--set gateways.istio-egressgateway.enabled=true \
@@ -84,7 +108,7 @@ istio-install:
 		--set mixer.enabled=true \
 		--set prometheus.enabled=true \
 		--set global.hub=istio \
-		--set global.tag=1.0.0 \
+		--set global.tag=1.0.1 \
 		--set global.imagePullPolicy=Always \
 		--set global.proxy.envoyStatsd.enabled=true \
 		--set global.mtls.enabled=true \
@@ -95,7 +119,8 @@ istio-install:
 		--set kiali.enabled=true \
 		--set kiali.hub=kiali \
 		--set kiali.tag=latest \
-		--set tracing.enabled=true
+		--set tracing.enabled=true \
+		--timeout 600
 
 
 

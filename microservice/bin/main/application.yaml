@@ -1,12 +1,11 @@
-version: 0.0.1
-color: "blue"
-
+version: 0.0.2
+color: "red"
 management:
   server:
     port: 8081
   endpoints:
     prometheus:
-        enabled: true
+      enabled: true
     web:
       exposure:
         include: 'info,health,prometheus'

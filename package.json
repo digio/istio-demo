@@ -15,10 +15,12 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
-    "normalize.css": "7.0.0",
+    "normalize-css": "^2.3.1",
+    "normalize.css": "^7.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "spectacle": "^5.1.0",
+    "spectacle-code-slide": "^0.5.2",
     "spectacle-renderer": "^0.0.3",
     "styled-components": "^3.4.5"
   },

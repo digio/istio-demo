@@ -1,3 +1,3 @@
 # create workload namespace
-#/bin/basg
+#/bin/bash
 kubectl create namespace development
