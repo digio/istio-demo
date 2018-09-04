@@ -23,6 +23,7 @@ A basic example of implementing ingress into an Istio service mesh, with a demon
 ## Reference
 
 [1] https://istio.io/docs/reference/config/istio.networking.v1alpha3/
+
 [2] https://istio.io/blog/2018/v1alpha3-routing/
 
 ## Prerequisites
