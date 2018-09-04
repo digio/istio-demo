@@ -17,6 +17,7 @@ const BoxViewWrapper = styled.div`
     flex-wrap: wrap;
     margin: auto;
     justify-content: center;
+    width: 900px;
   }
   .version {
     padding-left: 5px;

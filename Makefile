@@ -18,6 +18,11 @@ install:
 	curl -L https://git.io/getLatestIstio | sh -
 	sh init_kube.sh
 
+init-nginx:
+	cp policy/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf
+	sudo nginx -s stop; sudo nginx
+
+
 restart-nginx:
 	sudo nginx -s stop; sudo nginx
 ## raw gradle build
@@ -92,6 +97,9 @@ install-ingress:
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml
 access-observability:
 	kubectl apply -f policy/istio/observability/
+get-ingress-nodeport:
+	echo "export NODE_PORT="`kubectl -n ingress-nginx get service ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'`
+
 traffic:
 	siege -t 100 -r 10 -c 2 -v demo.microservice.local/color
 ## install istio control plane
