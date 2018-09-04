@@ -3,13 +3,8 @@ import React from 'react'
 
 // Import Spectacle Core tags
 import {
-  BlockQuote,
-  Cite,
   Deck,
   Heading,
-  ListItem,
-  List,
-  Quote,
   Slide,
   Image,
   Text
@@ -21,11 +16,7 @@ import App from '../app/App'
 import Logo from '../assets/logo.svg'
 import Github from '../assets/github.svg';
 
-// Require CSS
-// require('normalize.css')
 import 'normalize.css'
-// import vsCode from '../assets/canary.vs.yaml'
-// import vsCode from '../assets/example.code.js'
 const vsCode = require('raw-loader!../assets/example.code.js')
 const theme = createTheme(
   {
@@ -85,7 +76,6 @@ export default class Presentation extends React.Component {
             lang='yaml'
             bgColor='codeBackground'
             textColor='primary'
-            // code={vsCode}
             code={require('raw-loader!../assets/canary.vs.yaml')}
             ranges={[
               { loc: [0, 19], title: 'Default VirtualService' },
@@ -235,6 +225,16 @@ export default class Presentation extends React.Component {
             </Heading>
             <App />
           </Slide>
+          <Slide transition={['fade']} bgColor='primary' textColor='secondary'>
+              <Image
+                  src={Logo}
+                  width={150}
+                />
+              <Heading size={1} caps lineHeight={1} textColor='secondary'>
+              END
+              </Heading>
+
+            </Slide>
           <Slide transition={['fade']} bgColor='primary' textColor='secondary'>
               <Heading size={1} fit caps lineHeight={1} textColor='secondary'>
                 Thanks for Listening!
