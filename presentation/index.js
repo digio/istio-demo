@@ -13,7 +13,7 @@ import CodeSlide from 'spectacle-code-slide'
 // Import theme
 import createTheme from 'spectacle/lib/themes/default'
 import App from '../app/App'
-import Logo from '../assets/logo.svg'
+import IstioLogo from '../assets/istio-icon.svg'
 import Github from '../assets/github.svg';
 
 import 'normalize.css'
@@ -21,6 +21,7 @@ const vsCode = require('raw-loader!../assets/example.code.js')
 const theme = createTheme(
   {
     primary: 'white',
+    frontPage: '#6d95e1',
     secondary: '#1F2022',
     tertiary: '#03A9FC',
     quaternary: '#CECECE',
@@ -43,12 +44,12 @@ export default class Presentation extends React.Component {
           transitionDuration={500}
           theme={theme}
         >
-          <Slide transition={['zoom']} bgColor='primary'>
-            <Image src={Logo} width={150} />
+          <Slide transition={['zoom']} bgColor='frontPage'>
+            <Image src={IstioLogo} width={150} />
             <Heading size={1} caps lineHeight={1} textColor='secondary'>
-              MeBank
+              Demo
             </Heading>
-            <Text margin='10px 0 0' textColor='tertiary' size={1} bold>
+            <Text margin='10px 0 0' textColor='quaternary' size={1} bold>
               Enabling canary deployments and rollbacks with Istio
             </Text>
           </Slide>
@@ -95,7 +96,7 @@ export default class Presentation extends React.Component {
             textColor='primary'
           >
             <Image
-              src={Logo}
+              src={IstioLogo}
               width={150}
               style={{ animation: 'App-logo-spin infinite 20s linear' }}
             />
@@ -213,7 +214,7 @@ export default class Presentation extends React.Component {
             textColor='primary'
           >
               <Image
-                src={Logo}
+                src={IstioLogo}
                 width={150}
                 width={150}
                 style={{
@@ -227,7 +228,7 @@ export default class Presentation extends React.Component {
           </Slide>
           <Slide transition={['fade']} bgColor='primary' textColor='secondary'>
               <Image
-                  src={Logo}
+                  src={IstioLogo}
                   width={150}
                 />
               <Heading size={1} caps lineHeight={1} textColor='secondary'>

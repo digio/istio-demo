@@ -8,11 +8,11 @@ spec:
     - demo-gateway
     - mesh
   hosts:
-  - "demo-microservice.development.svc.cluster.local"
+  - "microservice-a.development.svc.cluster.local"
   http:
   - route:
     - destination:
-        host: demo-microservice.development.svc.cluster.local
+        host: microservice-a.development.svc.cluster.local
         subset: v1
         port:
           number: 8080

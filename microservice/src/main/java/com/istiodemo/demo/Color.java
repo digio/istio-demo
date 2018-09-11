@@ -17,9 +17,9 @@ import java.util.Random;
 @RequestMapping(value="/color")
 public class Color {
     @Value("${version}")
-    public String version = "2.0";
+    public String version = "1.0";
 
-    public String color = "red";
+    public String color = "blue";
     private static final Log log = LogFactory.getLog(Color.class);
 
     @RequestMapping(

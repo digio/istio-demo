@@ -3,7 +3,7 @@ services:
   app:
     build:
       context: .
-    image: castlemilk/demo-microservice:v2
+    image: castlemilk/microservice-a:v1
     ports:
       - "8080:8080"
       - "8081:8081"

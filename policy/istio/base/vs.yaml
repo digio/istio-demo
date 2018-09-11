@@ -13,7 +13,7 @@ spec:
     - uri:
         prefix: /
     rewrite:
-      authority: demo-microservice.development.svc.cluster.local
+      authority: microservice-a.development.svc.cluster.local
     route:
     - destination:
         host: istio-ingress.istio-system.svc.cluster.local

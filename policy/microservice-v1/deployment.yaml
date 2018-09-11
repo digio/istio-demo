@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: demo-microservice-v1
+  name: microservice-a-v1
   namespace: development
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: demo-microservice
-        release: demo-microservice-v1
+        app: microservice-a
+        release: microservice-a-v1
         version: v1
       annotations:
         sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: microservice
-          image: "castlemilk/demo-microservice:v1"
+          image: "castlemilk/microservice-a:v1"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

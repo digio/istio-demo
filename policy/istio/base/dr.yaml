@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: demo-destination
+  name: microservice-a
   namespace: development
 spec:
-  host: demo-microservice.development.svc.cluster.local
+  host: microservice-a.development.svc.cluster.local
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL

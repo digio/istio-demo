@@ -101,7 +101,7 @@ get-ingress-nodeport:
 	echo "export NODE_PORT="`kubectl -n ingress-nginx get service ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'`
 
 traffic:
-	siege -t 100 -r 10 -c 2 -v demo.microservice.local/color
+	siege -t 1H -r 2 --delay 0.1 -c 2 -v demo.microservice.local/color
 ## install istio control plane
 istio-install:
 	cd istio-1.0.1
