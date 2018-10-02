@@ -8,21 +8,21 @@ spec:
     - demo-gateway
     - mesh
   hosts:
-  - "demo-microservice.development.svc.cluster.local"
+  - "microservice-a.development.svc.cluster.local"
   http:
   - route:
     - destination:
-        host: demo-microservice.development.svc.cluster.local
+        host: microservice-a.development.svc.cluster.local
         subset: v1
         port:
           number: 8080
       weight: 90
     - destination:
-        host: demo-microservice.development.svc.cluster.local
-        subset: v2
+        host: microservice-a.development.svc.cluster.local
+        subset: v3
         port:
           number: 8080
       weight: 10
     retries:
-      attempts: 5
-      perTryTimeout: 2s
+      attempts: 10
+      perTryTimeout: 1s

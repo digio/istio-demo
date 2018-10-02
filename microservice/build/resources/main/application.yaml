@@ -1,5 +1,5 @@
-version: 0.0.1
-color: "blue"
+version: 0.0.2
+color: "red"
 management:
   server:
     port: 8081

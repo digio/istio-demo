@@ -2,7 +2,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: microservice-a
+  name: microservice-a-v2
   namespace: development
 spec:
   replicas: 1

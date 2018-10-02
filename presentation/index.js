@@ -53,7 +53,7 @@ export default class Presentation extends React.Component {
               Enabling canary deployments and rollbacks with Istio
             </Text>
           </Slide>
-          <CodeSlide
+          {/* <CodeSlide
             transition={['slide']}
             padding={0}
             lang='yaml'
@@ -70,8 +70,8 @@ export default class Presentation extends React.Component {
               { loc: [11, 14], note: 'match version: v1 of Pod label', title: 'Subsets' },
               { loc: [14, 17], note: 'match version: v2 of Pod label', title: 'Subsets' }
             ]}
-          />
-          <CodeSlide
+          /> */}
+          {/* <CodeSlide
             transition={['fade']}
             padding={0}
             lang='yaml'
@@ -87,7 +87,7 @@ export default class Presentation extends React.Component {
               { loc: [15, 16], note: 'use the subset named "v1", which is defined in DestinationRule', title: 'Subsets' },
               { loc: [18, 19], note: 'send 100% of the traffic to v1 of the microservice', title: 'Subsets' }
             ]}
-          />
+          /> */}
           <Slide
             maxWidth={1600}
             transition={['fade']}
@@ -105,7 +105,7 @@ export default class Presentation extends React.Component {
             </Heading>
             <App />
           </Slide>
-          <CodeSlide
+          {/* <CodeSlide
             transition={['slide']}
             padding={0}
             lang='yaml'
@@ -114,14 +114,15 @@ export default class Presentation extends React.Component {
             // code={vsCode}
             code={require('raw-loader!../assets/canary-90-10.vs.yaml')}
             ranges={[
-              { loc: [0, 25], title: 'Canary VirtualService' },
+              { loc: [0, 28], title: 'Canary VirtualService' },
               { loc: [1, 2], title: 'Custom Resource Definition (CRD)' },
               { loc: [6, 9], title: 'Gateway Selector', note: 'gateways and sidecars we want this VirtualService policy to exist on' },
               { loc: [10, 11], title: 'Destination Host', note: 'the destination hostname we want this VirtualService to apply on'},
               { loc: [13, 19], note: 'route 90% of traffic to "v1" of microservice', title: 'Primary Route' },
-              { loc: [19, 25], note: 'route 10% of traffic to "v2" of microservice', title: 'Canary Route' }
+              { loc: [19, 25], note: 'route 10% of traffic to "v2" of microservice', title: 'Canary Route' },
+              { loc: [25, 28], note: 'retry request 5 times before returning 500 error', title: 'Enable Retry' }
             ]}
-          />
+          /> */}
           <Slide
             align='flex-start flex-start'
             transition={['fade']}
@@ -163,7 +164,7 @@ export default class Presentation extends React.Component {
                 textAlign: 'center',
                 flexDirection: 'column',
                 alignContent: 'center',
-                width: 1100
+                height: 1000
               }}
             >
               <Heading size={1} fit caps lineHeight={1} textColor='white'>
@@ -173,7 +174,7 @@ export default class Presentation extends React.Component {
             <div style={{ marginTop: 100 }}>
               <iframe
                 width='100%'
-                height={900}
+                height={950}
                 src={`http://grafana.local:${NODE_PORT}`}
               />
             </div>
@@ -226,7 +227,7 @@ export default class Presentation extends React.Component {
             </Heading>
             <App />
           </Slide>
-          <Slide transition={['fade']} bgColor='primary' textColor='secondary'>
+          <Slide transition={['fade']} bgColor='frontPage' textColor='secondary'>
               <Image
                   src={IstioLogo}
                   width={150}

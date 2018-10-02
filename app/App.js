@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import styled from 'styled-components'
 import logo from '../assets/logo.svg'
+import Bad from '../assets/bad.svg'
 import './App.css'
 
 const colorDict = {
@@ -58,7 +59,6 @@ const BoxViewWrapper = styled.div`
     box-shadow: 0 5px #666;
     transform: translateY(4px);
   }
-  
 `
 const BoxWrapper = styled.div`
   background: ${props => colorDict[props.color]};
@@ -73,9 +73,22 @@ const BoxWrapper = styled.div`
   align-content: center;
   flex-direction: column; /* column | row */
 `
+const FailBoxWrapper = styled.div`
+  background: black;
+  color: white;
+  width: 150px;
+  height: 50px;
+  margin: 10px;
+  border-radius: 10px;
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column; /* column | row */
+`
 
 const Box = props => {
-  return (
+  return (props.data === 'ERROR' ? <FailBoxWrapper><img src={Bad} alt='bad'/></FailBoxWrapper> : 
     <BoxWrapper color={props.data.color}>
       <div className='version'>
         {props.data.version}
@@ -110,11 +123,13 @@ class App extends Component {
           crossdomain: true
         })
         .get(path)
+        .then(response => response.data)
+        .catch(error => 'ERROR')
     }
     axios
       .all(box_requests)
       .then(response =>
-        this.setState({ boxes: response.map(response => response.data) })
+        this.setState({ boxes: response.map(response => response) })
       )
   }
   componentDidMount () {
@@ -125,6 +140,7 @@ class App extends Component {
     this.forceUpdate()
   }
   render () {
+    console.log('fetching content...')
     console.log(this.state.boxes)
     const boxView = this.state.boxes.map((data, index) => (
       <Box key={`${index}`} data={data} />

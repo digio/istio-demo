@@ -54,20 +54,26 @@ initialise:
 	sh init_kube.sh
 ## deploy microservice v1
 deploy-v1:
-	kubectl apply -f policy/microservice-v1/
+	kubectl apply -f policy/microservice-a-v1/
 ## deploy microservice v2
 deploy-v2:
-	kubectl apply -f policy/microservice-v2/
+	kubectl apply -f policy/microservice-a-v2/
+## deploy microservice v3
+deploy-v3:
+	kubectl apply -f policy/microservice-a-v3/
+
 ## delete microservice-related resources
 clean:
-	kubectl --ignore-not-found=true delete -f policy/microservice-v1/
-	kubectl --ignore-not-found=true delete -f policy/microservice-v2/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v1/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v2/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v3/
 	kubectl --ignore-not-found=true delete -f policy/istio/base
 	kubectl --ignore-not-found=true delete -f policy/istio/canary
 ## delete all resources
 clean-all:
-	kubectl --ignore-not-found=true delete -f policy/microservice-v1/
-	kubectl --ignore-not-found=true delete -f policy/microservice-v2/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v1/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v2/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v3/
 	kubectl --ignore-not-found=true delete -f policy/istio/base
 	kubectl --ignore-not-found=true delete -f policy/istio/canary
 	kubectl --ignore-not-found=true delete -f istio-1.0.1/install/kubernetes/helm/istio/templates/crds.yaml
@@ -79,6 +85,12 @@ microservice-policy:
 	kubectl apply -f policy/istio/base
 	kubectl apply -f policy/istio/canary
 	kubectl apply -f policy/istio/canary/vs.100-v1.yaml
+## enable-retries
+retry.enable:
+	kubectl apply -f policy/istio/canary/vs.90-v1-with-retry.yaml
+## disable-retries
+retry.disable:
+	kubectl apply -f policy/istio/canary/vs.90-v1.yaml
 ## reapply istio policies
 refresh-policy:
 	kubectl --ignore-not-found=true delete -f policy/istio/base
