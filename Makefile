@@ -12,7 +12,7 @@ TARGET_MAX_CHAR_NUM=20
 install:
 	yarn
 	brew install siege
-	brew install kubernetres-helm
+	brew install kubernetes-helm
 	brew install kubernetes-cli
 	brew install nginx
 	curl -L https://git.io/getLatestIstio | sh -
