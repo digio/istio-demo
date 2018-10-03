@@ -8,6 +8,7 @@ RESET  := $(shell tput -Txterm sgr0)
 
 
 TARGET_MAX_CHAR_NUM=20
+ISTIO_VERSION=1.0.2
 ## install dependencies
 install:
 	yarn
@@ -116,8 +117,8 @@ traffic:
 	siege -t 1H -r 2 --delay 0.1 -c 2 -v demo.microservice.local/color
 ## install istio control plane
 istio-install:
-	cd istio-1.0.1
-	helm upgrade --install --force istio istio-1.0.1/install/kubernetes/helm/istio --namespace istio-system \
+	cd istio-${ISTIO_VERSION}
+	helm upgrade --install --force istio istio-${ISTIO_VERSION}/install/kubernetes/helm/istio --namespace istio-system \
 		--set ingress.enabled=true \
 		--set gateways.istio-ingressgateway.enabled=true \
 		--set gateways.istio-egressgateway.enabled=true \
@@ -128,7 +129,7 @@ istio-install:
 		--set mixer.enabled=true \
 		--set prometheus.enabled=true \
 		--set global.hub=istio \
-		--set global.tag=1.0.1 \
+		--set global.tag=${ISTIO_VERSION} \
 		--set global.imagePullPolicy=Always \
 		--set global.proxy.envoyStatsd.enabled=true \
 		--set global.mtls.enabled=true \
