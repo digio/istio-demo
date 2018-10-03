@@ -40,10 +40,10 @@ helm-install:
 	brew install kubernetes-helm
 ## check mtls status
 show-mtls:
-	./istio-1.0.1/bin/istioctl authn tls-check
+	./istio-${ISTIO_VERSION}/bin/istioctl authn tls-check
 ## show proxy synchronization status
 proxy-status:
-	./istio-1.0.1/bin/istioctl proxy-status
+	./istio-${ISTIO_VERSION}/bin/istioctl proxy-status
 ## label namespace
 label-namespace:
 	# kubectl create namespace development
@@ -77,7 +77,7 @@ clean-all:
 	kubectl --ignore-not-found=true delete -f policy/microservice-a-v3/
 	kubectl --ignore-not-found=true delete -f policy/istio/base
 	kubectl --ignore-not-found=true delete -f policy/istio/canary
-	kubectl --ignore-not-found=true delete -f istio-1.0.1/install/kubernetes/helm/istio/templates/crds.yaml
+	kubectl --ignore-not-found=true delete -f istio-${ISTIO_VERSION}/install/kubernetes/helm/istio/templates/crds.yaml
 	helm del --purge istio
 	kubectl -n istio-system delete job --all
 	kubectl delete namespace istio-system
