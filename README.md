@@ -83,7 +83,7 @@ The end-state configuration should allow for both the web-app (presentation) and
 In order to install Istio we run the below command. What this will do is deploy the Istio control plane via Helm, there are a range of flags added to add in the additional observability tooling as part of the deployment
 
 ```bash
-make install-istio
+make istio-install
 ```
 
 ### Install Ingress Components
