@@ -28,7 +28,7 @@ A basic example of implementing ingress into an Istio service mesh, with a demon
 
 ## Prerequisites
 
-- I've developed and tested this using Docker for Mac, available [here](https://store.docker.com/editions/community/docker-ce-desktop-mac). These instructions/tooling should also work with Minikube, however I have not tested yet.
+- I've developed and tested this using Docker for Mac, with the Kubernetes local cluster enabled.  It is available [here](https://store.docker.com/editions/community/docker-ce-desktop-mac).  These instructions/tooling should also work with Minikube, however I have not tested yet.
 
 - nginx/haproxy to enable a single origin to prevent CORS complaints when web-app accesses the backend. associated steps are implemented in the `Makefile` contained in this repo, instructions below.
 
