@@ -77,7 +77,7 @@ clean-all:
 	kubectl --ignore-not-found=true delete -f policy/microservice-a-v3/
 	kubectl --ignore-not-found=true delete -f policy/istio/base
 	kubectl --ignore-not-found=true delete -f policy/istio/canary
-	kubectl --ignore-not-found=true delete -f istio-1.0.1/install/kubernetes/helm/istio/templates/crds.yaml
+	kubectl --ignore-not-found=true delete -f istio-${ISTIO_VERSION}/install/kubernetes/helm/istio/templates/crds.yaml
 	helm del --purge istio
 	kubectl -n istio-system delete job --all
 	kubectl delete namespace istio-system
