@@ -13,6 +13,7 @@ import CodeSlide from 'spectacle-code-slide'
 // Import theme
 import createTheme from 'spectacle/lib/themes/default'
 import App from '../app/App'
+import Architecture from '../components/Architecture/index.jsx';
 import Logo from '../assets/logo.svg'
 import Github from '../assets/github.svg';
 
@@ -39,6 +40,7 @@ export default class Presentation extends React.Component {
       (
         <Deck
           contentWidth={1400}
+          contentHeight={1200}
           transition={['zoom', 'slide']}
           transitionDuration={500}
           theme={theme}
@@ -51,6 +53,12 @@ export default class Presentation extends React.Component {
             <Text margin='10px 0 0' textColor='tertiary' size={1} bold>
               Enabling canary deployments and rollbacks with Istio
             </Text>
+          </Slide>
+          <Slide transition={['zoom']} bgColor='primary'>
+            <Heading size={1} caps lineHeight={1} textColor='secondary'>
+              Architecture
+            </Heading>
+            <Architecture />
           </Slide>
           <CodeSlide
             transition={['slide']}
