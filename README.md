@@ -51,6 +51,17 @@ npm run start
 make install
 ```
 
+### Resolution
+
+Add the following to your /etc/hosts to faciliate domain resolution which will be
+used for requesting content from the service mesh, as well as the `nginx-ingress-controller`:
+
+```text
+...
+127.0.0.1 tracing.local grafana.local kiali.local demo.microservice.local
+...
+```
+
 ### Local CORS
 
 In order to run the Istio demo we need to run a series of installs and deployments within a kubernetes cluster. This is achieved through the `Makefile` in this repo.
@@ -67,23 +78,12 @@ The end-state configuration should allow for both the web-app (presentation) and
 - `localhost:8080/` - webapp
 - `localhost:8080/api/` - microservice
 
-### Resolution
-
-Add the following to your /etc/hosts to faciliate domain resolution which will be
-used for requesting content from the service mesh, as well as the `nginx-ingress-controller`:
-
-```text
-...
-127.0.0.1 tracing.local grafana.local kiali.local demo.microservice.local
-...
-```
-
 ### Install Istio
 
 In order to install Istio we run the below command. What this will do is deploy the Istio control plane via Helm, there are a range of flags added to add in the additional observability tooling as part of the deployment
 
 ```bash
-make install-istio
+make istio-install
 ```
 
 ### Install Ingress Components

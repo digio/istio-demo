@@ -40,10 +40,10 @@ helm-install:
 	brew install kubernetes-helm
 ## check mtls status
 show-mtls:
-	./istio-1.0.1/bin/istioctl authn tls-check
+	./istio-${ISTIO_VERSION}/bin/istioctl authn tls-check
 ## show proxy synchronization status
 proxy-status:
-	./istio-1.0.1/bin/istioctl proxy-status
+	./istio-${ISTIO_VERSION}/bin/istioctl proxy-status
 ## label namespace
 label-namespace:
 	# kubectl create namespace development
