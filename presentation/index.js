@@ -14,7 +14,9 @@ import CodeSlide from 'spectacle-code-slide'
 import createTheme from 'spectacle/lib/themes/default'
 import App from '../app/App'
 import Architecture from '../components/Architecture/index.jsx';
-import Logo from '../assets/logo.svg'
+import GenericLogo from '../assets/istio-icon.svg';
+import IstioLogo from '../assets/istio-icon.svg'
+import OtherLogo from '../assets/logo3.svg';
 import Github from '../assets/github.svg';
 
 import 'normalize.css'
@@ -22,11 +24,14 @@ const vsCode = require('raw-loader!../assets/example.code.js')
 const theme = createTheme(
   {
     primary: 'white',
-    frontPage: '#6d95e1',
+    frontPage: '#f6f9ff',
+    frontPagePrimary: 'black',
+    frontPageSecondary: '#868686',
     secondary: '#1F2022',
     tertiary: '#03A9FC',
     quaternary: '#CECECE',
     codeBackground: '#72a0f5',
+
   },
   {
     primary: 'Montserrat',
@@ -47,12 +52,12 @@ export default class Presentation extends React.Component {
           theme={theme}
         >
           <Slide transition={['zoom']} bgColor='frontPage'>
-            <Image src={IstioLogo} width={150} />
-            <Heading size={1} caps lineHeight={1} textColor='secondary'>
-              Demo
+            <Image src={OtherLogo || GenericLogo} width={150} />
+            <Heading size={1} caps lineHeight={1} textColor='frontPagePrimary'>
+              IStio Demo
             </Heading>
-            <Text margin='10px 0 0' textColor='quaternary' size={1} bold>
-              Enabling canary deployments and rollbacks with Istio
+            <Text margin='10px 0 0' textColor='frontPageSecondary' size={1} bold>
+              Enabling resilient canary deployments and rollbacks with Istio
             </Text>
           </Slide>
           <Slide transition={['zoom']} bgColor='primary'>
@@ -61,6 +66,40 @@ export default class Presentation extends React.Component {
             </Heading>
             <Architecture />
           </Slide>
+          <CodeSlide
+            transition={['slide']}
+            padding={0}
+            lang='yaml'
+            bgColor='codeBackground'
+            textColor='primary'
+            code={require('raw-loader!../assets/gw.yaml')}
+            ranges={[
+              { loc: [0, 20], title: 'Gateway' },
+              { loc: [0, 1], title: 'New mesh API' },
+              { loc: [1, 2], title: 'Custom Resource Definitions (CRDs)' },
+              { loc: [6, 8], note: 'select which ingress gateway this policy should live on' },
+              { loc: [9, 13], title: 'Listener', note: 'cluster resolvable hostname' },
+              { loc: [13, 15], title: 'Host', note: 'will only allow traffic into mesh that have the matching Host reference' },
+              { loc: [15, 20], title: 'mTLS', note: 'mutual TLS authentication on ingress' },
+            ]}
+          />
+          <CodeSlide
+            transition={['fade']}
+            padding={0}
+            lang='yaml'
+            bgColor='codeBackground'
+            textColor='primary'
+            code={require('raw-loader!../assets/canary.vs.yaml')}
+            ranges={[
+              { loc: [0, 19], title: 'Default VirtualService' },
+              { loc: [1, 2], title: 'Custom Resource Definition (CRD)' },
+              { loc: [6, 9], title: 'Gateway Selector', note: 'gateways and sidecars we want this VirtualService policy to exist on' },
+              { loc: [10, 11], title: 'Destination Host', note: 'the destination hostname we want this VirtualService to apply on' },
+              { loc: [14, 15], title: 'Destination Host', note: 'must match the hostname specified in DestinationRule' },
+              { loc: [15, 16], note: 'use the subset named "v1", which is defined in DestinationRule', title: 'Subsets' },
+              { loc: [18, 19], note: 'send 100% of the traffic to v1 of the microservice', title: 'Subsets' }
+            ]}
+          />
           <CodeSlide
             transition={['slide']}
             padding={0}
@@ -78,24 +117,7 @@ export default class Presentation extends React.Component {
               { loc: [11, 14], note: 'match version: v1 of Pod label', title: 'Subsets' },
               { loc: [14, 17], note: 'match version: v2 of Pod label', title: 'Subsets' }
             ]}
-          /> */}
-          {/* <CodeSlide
-            transition={['fade']}
-            padding={0}
-            lang='yaml'
-            bgColor='codeBackground'
-            textColor='primary'
-            code={require('raw-loader!../assets/canary.vs.yaml')}
-            ranges={[
-              { loc: [0, 19], title: 'Default VirtualService' },
-              { loc: [1, 2], title: 'Custom Resource Definition (CRD)' },
-              { loc: [6, 9], title: 'Gateway Selector', note: 'gateways and sidecars we want this VirtualService policy to exist on' },
-              { loc: [10, 11], title: 'Destination Host', note: 'the destination hostname we want this VirtualService to apply on' },
-              { loc: [14, 15], title: 'Destination Host', note: 'must match the hostname specified in DestinationRule' },
-              { loc: [15, 16], note: 'use the subset named "v1", which is defined in DestinationRule', title: 'Subsets' },
-              { loc: [18, 19], note: 'send 100% of the traffic to v1 of the microservice', title: 'Subsets' }
-            ]}
-          /> */}
+          />
           <Slide
             maxWidth={1600}
             transition={['fade']}
@@ -104,7 +126,7 @@ export default class Presentation extends React.Component {
             textColor='primary'
           >
             <Image
-              src={IstioLogo}
+              src={OtherLogo || GenericLogo}
               width={150}
               style={{ animation: 'App-logo-spin infinite 20s linear' }}
             />
@@ -113,7 +135,7 @@ export default class Presentation extends React.Component {
             </Heading>
             <App />
           </Slide>
-          {/* <CodeSlide
+          <CodeSlide
             transition={['slide']}
             padding={0}
             lang='yaml'
@@ -130,7 +152,7 @@ export default class Presentation extends React.Component {
               { loc: [19, 25], note: 'route 10% of traffic to "v2" of microservice', title: 'Canary Route' },
               { loc: [25, 28], note: 'retry request 5 times before returning 500 error', title: 'Enable Retry' }
             ]}
-          /> */}
+          />
           <Slide
             align='flex-start flex-start'
             transition={['fade']}
@@ -144,18 +166,19 @@ export default class Presentation extends React.Component {
                 textAlign: 'center',
                 flexDirection: 'column',
                 alignContent: 'center',
-                width: 1100
+                width: '100%',
+                // marginBottom: 20
               }}
             >
               <Heading size={1} fit caps lineHeight={1} textColor='white'>
                 Jaeger (Distributed Tracing)
               </Heading>
             </div>
-            <div style={{ marginTop: 100 }}>
+            <div style={{ marginTop: 20 }}>
               <iframe
-                width='100%'
-                height={1000}
+                style={{ width: 1300, height: 800}}
                 src={`http://tracing.local:${NODE_PORT}`}
+                frameborder="0" allowfullscreen
               />
             </div>
           </Slide>
@@ -179,11 +202,12 @@ export default class Presentation extends React.Component {
                 Grafana (Metrics)
               </Heading>
             </div>
-            <div style={{ marginTop: 100 }}>
+            <div style={{ marginTop: 20 }}>
               <iframe
-                width='100%'
-                height={950}
+                width={1300}
+                height={800}
                 src={`http://grafana.local:${NODE_PORT}`}
+                frameborder="0" allowfullscreen
               />
             </div>
           </Slide>
@@ -207,11 +231,12 @@ export default class Presentation extends React.Component {
                 Kiali (Mesh Observability)
               </Heading>
             </div>
-            <div style={{ marginTop: 100 }}>
+            <div style={{ marginTop: 20 }}>
               <iframe
-                width='100%'
-                height={1000}
-                src={`http://kiali.local:${NODE_PORT}/console/service-graph/istio-system?layout=cose-bilkent&duration=60&edges=requestsPerSecond&graphType=versionedApp`}
+                width={1300}
+                height={800}
+                src={`http://kiali.local:${NODE_PORT}/console/graph/namespaces/istio-system?layout=dagre&duration=60&edges=responseTime95thPercentile&graphType=versionedApp&injectServiceNodes=false`}
+                frameborder="0" allowfullscreen
               />
             </div>
           </Slide>
@@ -223,7 +248,7 @@ export default class Presentation extends React.Component {
             textColor='primary'
           >
               <Image
-                src={IstioLogo}
+                src={OtherLogo || GenericLogo}
                 width={150}
                 width={150}
                 style={{
