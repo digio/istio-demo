@@ -41,7 +41,7 @@ To start the presentation alone run the following:
 ```bash
 nvm install
 nvm use
-yarn
+npm install
 npm run start
 ```
 
