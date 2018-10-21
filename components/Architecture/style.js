@@ -17,10 +17,10 @@ export const Wrapper = styled.div`
 export const ClientImageWrapper = styled.img`
     position: absolute;
     grid-area: image;
-    bottom: ${props => props.selected ? 0 : -1}%;
+    bottom: ${props => props.selected ? 5 : 4}%;
+    right: 49%;
     filter: ${props => props.selected ? `drop-shadow(0 3px 2px rgb(85, 72, 132)) drop-shadow(0 2px 2px rgb(85, 72, 132))` : `none`};
     &:hover {
-        bottom: -1%;
         filter: drop-shadow(0 3px 2px rgb(85, 72, 132)) drop-shadow(0 2px 2px rgb(85, 72, 132));
     }
 `;
@@ -29,8 +29,8 @@ export const ClientLabel = styled.div`
     color: white;
     background: black;
     padding: 10px;
-    bottom: 4%;
-    right: 3%;
+    bottom: 9%;
+    right: 7%;
     display: ${props => props.selected ? `block` : `none`};
     p {
         margin: 0 20px 0 20px;
@@ -38,6 +38,7 @@ export const ClientLabel = styled.div`
 `;
 export const BackgroundImageWrapper = styled.img`
     position: absolute;
+    top: ${props => props.selected ? 19 : 20}%;
     filter: ${props => props.selected ? `drop-shadow(0 3px 2px rgb(85, 72, 132)) drop-shadow(0 2px 2px rgb(85, 72, 132))` : `none`};
     &:hover {
         filter: drop-shadow(0 3px 2px rgb(85, 72, 132)) drop-shadow(0 2px 2px rgb(85, 72, 132));
@@ -47,7 +48,7 @@ export const BackgroundLabel = styled.div`
     position: absolute;
     color: white;
     background: black;
-    top: 20%;
+    top: 17%;
     right: -10%;
     display: ${props => props.selected ? `block` : `none`};
     p {
@@ -57,6 +58,7 @@ export const BackgroundLabel = styled.div`
 `;
 export const MicroservicesImageWrapper = styled.img`
     position: absolute;
+    top: ${props => props.selected ? 32 :33}%;
     filter: ${props => props.selected ? `drop-shadow(0 3px 2px rgb(85, 72, 132)) drop-shadow(0 2px 2px rgb(85, 72, 132))` : `none`};
     &:hover {
         filter: drop-shadow(0 3px 2px rgb(85, 72, 132)) drop-shadow(0 2px 2px rgb(85, 72, 132));
@@ -64,8 +66,8 @@ export const MicroservicesImageWrapper = styled.img`
 `;
 export const MicroservicesLabel = styled.div`
     position: absolute;
-    top: 30%;
-    right: 5%;
+    top: 16%;
+    right: -15%;
     color: white;
     background: black;
     display: ${props => props.selected ? `block` : `none`};
@@ -75,7 +77,7 @@ export const MicroservicesLabel = styled.div`
 `;
 export const IngressImageWrapper = styled.img`
     position: absolute;
-    top: 59%;
+    top: ${props => props.selected ? 48 : 49}%;
     filter: ${props => props.selected ? `drop-shadow(0 3px 2px rgb(85, 72, 132)) drop-shadow(0 2px 2px rgb(85, 72, 132))` : `none`};
     &:hover {
         filter: drop-shadow(0 3px 2px rgb(85, 72, 132)) drop-shadow(0 2px 2px rgb(85, 72, 132));
@@ -83,8 +85,8 @@ export const IngressImageWrapper = styled.img`
 `;
 export const IngressLabel = styled.div`
     position: absolute;
-    top: 67%;
-    right: 5%;
+    top: 60%;
+    right: -5%;
     color: white;
     background: black;
     display: ${props => props.selected ? `block` : `none`};
