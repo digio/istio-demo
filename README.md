@@ -142,7 +142,7 @@ make get-ingress-nodeport
 If you've added the required `/etc/hosts` configuration. These services will be available at the the following `${HOSTNAME}:${NODE_PORT}`. Example:
 
 - [http://grafana.local:NODE_PORT](http://grafana.local:NODE_PORT)
-- [http://jaeger.local:NODE_PORT](http://jaeger.local:NODE_PORT)
+- [http://tracing.local:NODE_PORT](http://tracing.local:NODE_PORT)
 - [http://kiali.local:NODE_PORT](http://kiali.local:NODE_PORT)
 
 ### Generate Traffic
