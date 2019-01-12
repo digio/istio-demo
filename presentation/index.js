@@ -1,5 +1,5 @@
 // Import React
-import React from 'react'
+import React from 'react';
 
 // Import Spectacle Core tags
 import {
@@ -8,18 +8,20 @@ import {
   Slide,
   Image,
   Text
-} from 'spectacle'
-import CodeSlide from 'spectacle-code-slide'
+} from 'spectacle';
+import CodeSlide from 'spectacle-code-slide';
+import Terminal from "spectacle-terminal";
 // Import theme
-import createTheme from 'spectacle/lib/themes/default'
-import App from '../app/App'
+import createTheme from 'spectacle/lib/themes/default';
+import App from '../app/App';
 import Architecture from '../components/Architecture/index.jsx';
 import GenericLogo from '../assets/istio-icon.svg';
+import DigioLogo from '../assets/digio-logo.svg';
 import IstioLogo from '../assets/istio-icon.svg'
-import OtherLogo from '../assets/logo3.svg';
+// import OtherLogo from '../assets/logo3.svg';
 import Github from '../assets/github.svg';
 
-import 'normalize.css'
+import 'normalize.css';
 const vsCode = require('raw-loader!../assets/example.code.js')
 const theme = createTheme(
   {
@@ -51,15 +53,15 @@ export default class Presentation extends React.Component {
           transitionDuration={500}
           theme={theme}
         >
-          <Slide transition={['zoom']} bgColor='frontPage'>
-            <Image src={OtherLogo || GenericLogo} width={150} />
+          {/* <Slide transition={['zoom']} bgColor='frontPage'>
+            <Image src={DigioLogo} width={150} />
             <Heading size={1} caps lineHeight={1} textColor='frontPagePrimary'>
               IStio Demo
             </Heading>
             <Text margin='10px 0 0' textColor='frontPageSecondary' size={1} bold>
               Enabling resilient canary deployments and rollbacks with Istio
             </Text>
-          </Slide>
+          </Slide> */}
           <Slide transition={['zoom']} bgColor='primary'>
             <Heading size={1} caps lineHeight={1} textColor='secondary'>
               Architecture
@@ -118,7 +120,19 @@ export default class Presentation extends React.Component {
               { loc: [14, 17], note: 'match version: v2 of Pod label', title: 'Subsets' }
             ]}
           />
-          <Slide
+          <Slide transition={[ "spin", "slide" ]} bgColor="primary">
+            <Heading size={ 1 } caps fit lineHeight={1} textColor="tertiary">kubectl</Heading>
+            <Terminal title="1. castlemilk@digio: ~(zsh)" output={[
+              <div style={{ fontSize: 16}}>kubectl get pods -n development --show-labels</div>,
+              <div style={{ fontSize: 16}}>
+                <div>NAME                                 READY     STATUS    RESTARTS   AGE  LABELS</div>
+                <div style={{ display: 'flex'}}>microservice-a-v1-544b964d55-5ddnz   2/2       Running   0          1d   <div style={{ color: 'red'}}>version=0.0.1</div></div>
+                <div style={{ display: 'flex'}}>microservice-a-v2-85c99d7f59-4j9n9   2/2       Running   0          2d   <div style={{ color: 'red'}}>version=0.0.2</div></div>
+                <div style={{ display: 'flex'}}>microservice-a-v3-7449556665-kj6g8   2/2       Running   0          10m  <div style={{ color: 'red'}}>version=0.0.3</div></div>
+              </div>]}
+            />
+          </Slide>
+          {/* <Slide
             maxWidth={1600}
             transition={['fade']}
             align='flex-start flex-start'
@@ -126,7 +140,7 @@ export default class Presentation extends React.Component {
             textColor='primary'
           >
             <Image
-              src={OtherLogo || GenericLogo}
+              src={GenericLogo}
               width={150}
               style={{ animation: 'App-logo-spin infinite 20s linear' }}
             />
@@ -134,7 +148,7 @@ export default class Presentation extends React.Component {
               Canary Demo
             </Heading>
             <App />
-          </Slide>
+          </Slide> */}
           <CodeSlide
             transition={['slide']}
             padding={0}
@@ -176,7 +190,7 @@ export default class Presentation extends React.Component {
             </div>
             <div style={{ marginTop: 20 }}>
               <iframe
-                style={{ width: 1300, height: 800}}
+                style={{ width: 1300, height: 900}}
                 src={`http://tracing.local:${NODE_PORT}`}
                 frameborder="0" allowfullscreen
               />
@@ -248,7 +262,7 @@ export default class Presentation extends React.Component {
             textColor='primary'
           >
               <Image
-                src={OtherLogo || GenericLogo}
+                src={GenericLogo}
                 width={150}
                 width={150}
                 style={{

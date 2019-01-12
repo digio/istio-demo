@@ -18,8 +18,10 @@ install:
 	brew install nginx
 	curl -L https://git.io/getLatestIstio | sh -
 	sh init_kube.sh
-
-init-nginx:
+istio.download-latest:
+	curl -L https://git.io/getLatestIstio | sh -
+## update nginx config
+nginx.update:
 	cp policy/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf
 	sudo nginx -s stop; sudo nginx
 

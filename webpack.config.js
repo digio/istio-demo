@@ -18,7 +18,7 @@ module.exports = {
   },
   plugins: [
     new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
   ],
   module: {
     loaders: [{
@@ -41,6 +41,10 @@ module.exports = {
       test: /\.svg$/,
       loader: "url-loader?limit=10000&mimetype=image/svg+xml",
       include: path.join(__dirname, "components", "Architecture", "images")
+    },{
+      test: /\.ico$/,
+      loader: "file-loader?name=[name].[ext]",
+      include: path.join(__dirname, "assets")
     }, {
       test: /\.png$/,
       loader: "url-loader?mimetype=image/png",

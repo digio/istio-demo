@@ -30,7 +30,7 @@ export const ClientLabel = styled.div`
     background: black;
     padding: 10px;
     bottom: 9%;
-    right: 7%;
+    right: 3%;
     display: ${props => props.selected ? `block` : `none`};
     p {
         margin: 0 20px 0 20px;
@@ -49,7 +49,7 @@ export const BackgroundLabel = styled.div`
     color: white;
     background: black;
     top: 17%;
-    right: -10%;
+    right: -6%;
     display: ${props => props.selected ? `block` : `none`};
     p {
         margin: 0 20px 0 20px;
@@ -67,7 +67,7 @@ export const MicroservicesImageWrapper = styled.img`
 export const MicroservicesLabel = styled.div`
     position: absolute;
     top: 16%;
-    right: -15%;
+    right: -7%;
     color: white;
     background: black;
     display: ${props => props.selected ? `block` : `none`};
