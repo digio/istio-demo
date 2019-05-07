@@ -5,20 +5,17 @@ A basic example of implementing ingress into an Istio service mesh, with a demon
 ## Contents
 
 - [Istio Demonstration](#istio-demonstration)
-    - [Contents](#contents)
-    - [Reference](#reference)
-    - [Prerequisites](#prerequisites)
-    - [Getting Started](#getting-started)
-        - [install dependencies](#install-dependencies)
-        - [Local CORS](#local-cors)
-        - [Resolution](#resolution)
-        - [Install Istio](#install-istio)
-        - [Install Ingress Components](#install-ingress-components)
-        - [label namespace](#label-namespace)
-        - [Deploy Example Microservice](#deploy-example-microservice)
-        - [Deploy Mesh and Ingressgateway Istio Policy](#deploy-mesh-and-ingressgateway-istio-policy)
-        - [Observability](#observability)
-        - [Generate Traffic](#generate-traffic)
+  - [Contents](#contents)
+  - [Reference](#reference)
+  - [Prerequisites](#prerequisites)
+  - [Getting Started](#getting-started)
+    - [install dependencies](#install-dependencies)
+    - [Resolution](#resolution)
+    - [Local CORS](#local-cors)
+    - [Install Istio](#install-istio)
+    - [Deploy Example Microservice](#deploy-example-microservice)
+    - [Observability](#observability)
+    - [Generate Traffic](#generate-traffic)
 
 ## Reference
 
@@ -58,7 +55,7 @@ used for requesting content from the service mesh, as well as the `nginx-ingress
 
 ```text
 ...
-127.0.0.1 tracing.local grafana.local kiali.local demo.microservice.local
+127.0.0.1 jaeger.demo grafana.demo kiali.demo api.demo
 ...
 ```
 
@@ -83,23 +80,7 @@ The end-state configuration should allow for both the web-app (presentation) and
 In order to install Istio we run the below command. What this will do is deploy the Istio control plane via Helm, there are a range of flags added to add in the additional observability tooling as part of the deployment
 
 ```bash
-make istio-install
-```
-
-### Install Ingress Components
-
-In order to add the `nginx-ingress-controller` to the kubernetes cluster (used for accessing observability tooling) we run the following:
-
-```bash
-make install-ingress
-```
-
-### label namespace
-
-In orde to allow for auto-sidecar injection we label the given namespace with the following tag:
-
-```bash
-make label-namespace
+make istio.intall
 ```
 
 ### Deploy Example Microservice
@@ -109,14 +90,7 @@ With the namespace labelled, the below deployment will have side-cars added and 
 These are deployed in the `development` namespace. This namespace has been labeled with `istio-injection=enabled`, consequently the `admissionMutatingWebhook` will modify the deployment resource to include an istio side-car in the deployment.
 
 ```bash
-make deploy-v1
-make deploy-v2
-```
-
-### Deploy Mesh and Ingressgateway Istio Policy
-
-```bash
-make microservice-policy
+make deploy.demo
 ```
 
 This will apply the related Istio CRD's to faciliate ingress into the mesh to the required microservices. You can see these polices in [policy/istio](/policy/istio) within this repo.
@@ -130,20 +104,14 @@ The observability tooling such as Jaeger, Grafana, Prometheus, and Kiali will be
 This can be achieved with the following make command:
 
 ```bash
-make access-observability
+make istio.observability 
 ```
-
-Now in order to access these endpoints, we need to discover the NodePort that has been provisioned for the given `nginx-ingress-controller`. This can be discovered with the following command:
-
-```bash
-make get-ingress-nodeport
-```
-
 If you've added the required `/etc/hosts` configuration. These services will be available at the the following `${HOSTNAME}:${NODE_PORT}`. Example:
 
-- [http://grafana.local:NODE_PORT](http://grafana.local:NODE_PORT)
-- [http://tracing.local:NODE_PORT](http://tracing.local:NODE_PORT)
-- [http://kiali.local:NODE_PORT](http://kiali.local:NODE_PORT)
+- [http://grafana.demo](http://grafana.demo)
+- [http://tracing.demo](http://tracing.demo)
+- [http://kiali.demo](http://kiali.demo)
+- [http://demo.demo](http://kiali.demo)
 
 ### Generate Traffic
 
@@ -153,4 +121,4 @@ In order to stimulate the given backend microservices and the Istio service mesh
 make traffic
 ```
 
-This will generate many requests to the `http://demo.microservice.local` host, and we should see this traffic coming in via the myriad of observability tooling made available in the previous step.
+This will generate many requests to the `http://api.demo` host, and we should see this traffic coming in via the myriad of observability tooling made available in the previous step.
