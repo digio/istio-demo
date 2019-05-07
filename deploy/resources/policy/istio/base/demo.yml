@@ -1,0 +1,36 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: demo 
+  namespace: istio-system
+spec:
+  hosts:
+  - "demo.demo"
+  gateways:
+  - demo-gateway.development.svc.cluster.local
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    corsPolicy:
+      allowOrigin:
+      - "*"
+      allowMethods:
+      - GET
+    route:
+    - destination:
+        host: webapp.development.svc.cluster.local
+        port:
+          number: 3000
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: demo 
+  namespace: istio-system
+spec:
+  host: webapp.development.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

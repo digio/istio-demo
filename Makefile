@@ -8,7 +8,6 @@ RESET  := $(shell tput -Txterm sgr0)
 
 ISTIO_VERSION=1.1.5
 TARGET_MAX_CHAR_NUM=20
-ISTIO_VERSION=1.0.2
 ## install dependencies
 install: fetch.infra
 	yarn
@@ -50,7 +49,7 @@ gradle-build:
 	gradle build -p microservice
 ## build docker container
 build:
-	docker-compose -f microservice/docker-compose.yaml build
+	docker build -t demo webapp/	
 ## build docker container
 push:
 	docker-compose -f microservice/docker-compose.yaml push
@@ -72,15 +71,6 @@ label-namespace:
 initialise:
 	cd deploy/charts; curl -L https://git.io/getLatestIstio | sh -
 	sh init_kube.sh
-## deploy microservice v1
-deploy-v1:
-	kubectl apply -f policy/microservice-a-v1/
-## deploy microservice v2
-deploy-v2:
-	kubectl apply -f policy/microservice-a-v2/
-## deploy microservice v3
-deploy-v3:
-	kubectl apply -f policy/microservice-a-v3/
 
 ## delete microservice-related resources
 clean:
@@ -118,11 +108,13 @@ refresh-policy:
 	kubectl apply -f policy/istio/base
 	kubectl apply -f policy/istio/canary/vs.100-v1.yaml
 ## deploy canary with a 90-10 split
-canary:
-	kubectl apply -f policy/istio/canary/vs.90-v1.yaml
+deploy.canary:
+	kubectl apply -f deploy/resources/policy/istio/canary/vs.90-v1.yaml
+deploy.canary.retry:
+	kubectl apply -f deploy/resources/policy/istio/canary/vs.90-v1-with-retry.yaml
 ## rollback canary deployment
-canary-rollback:
-	kubectl apply -f policy/istio/canary/vs.100-v1.yaml
+rollback.canary:
+	kubectl apply -f deploy/resources/policy/istio/canary/vs.100-v1.yaml
 install-ingress:
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/cloud-generic.yaml
@@ -131,8 +123,8 @@ get-ingress-nodeport:
 	echo "export NODE_PORT="`kubectl -n ingress-nginx get service ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'`
 
 traffic:
-	siege -t 1H -r 2 --delay 0.1 -c 2 -v demo.microservice.local/color
-	siege -t 100 -r 10 -c 2 -v demo.local/color
+	siege -t 1H -r 2 --delay 0.1 -c 2 -v api.demo/color
+	# siege -t 100 -r 10 -c 2 -v demo.local/color
 ## install istio control plane
 istio.install:
 	kubectl apply -f deploy/resources/istio/${ISTIO_VERSION}/service/mandatory/namespace.yaml
@@ -149,11 +141,12 @@ demo.deploy.v1:
 
 demo.deploy.v2:
 	kubectl apply -f deploy/resources/policy/microservice-v2/
-demo.deploy:
+deploy.demo:
+	kubectl apply -f deploy/resources/policy/microservice-v3/
 	kubectl apply -f deploy/resources/policy/microservice-v2/
 	kubectl apply -f deploy/resources/policy/microservice-v1/
+	kubectl apply -f deploy/resources/policy/webapp/
 	kubectl apply -f deploy/resources/policy/istio/base
-	kubectl apply -f deploy/resources/policy/istio/canary
 	kubectl apply -f deploy/resources/policy/istio/canary/vs.100-v1.yaml
 
 
