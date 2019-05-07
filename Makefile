@@ -6,18 +6,37 @@ YELLOW := $(shell tput -Txterm setaf 3)
 WHITE  := $(shell tput -Txterm setaf 7)
 RESET  := $(shell tput -Txterm sgr0)
 
-
+ISTIO_VERSION=1.1.5
 TARGET_MAX_CHAR_NUM=20
 ## install dependencies
-install:
+install: fetch.infra
 	yarn
-	brew install siege
-	brew install kubernetres-helm
-	brew install kubernetes-cli
-	brew install nginx
-	curl -L https://git.io/getLatestIstio | sh -
+	sh dependencies.sh
 	sh init_kube.sh
+fetch.infra:
+ifeq (,$(wildcard istio-${ISTIO_VERSION}))
+	curl -L https://git.io/getLatestIstio | sh -
+endif
 
+define wait_for_ns_termination
+	@printf "🌀 removing $(1) namespace";
+	@while [ "$$(kubectl get namespace $(1) > /dev/null 2>&1; echo $$?)" = "0" ]; do printf "."; sleep 2; done;
+	@printf " ✅\n";
+endef
+
+define wait_for_deployment
+	@printf "🌀 waiting for deployment $(2) to complete"; 
+	@until kubectl get deployment -n $(1)  "$(2)" -o jsonpath='{.status.conditions[?(@.type=="Available")].status}' | grep -q True ; do printf "."; sleep 2 ; done;
+	@printf "  ✅\n";
+endef
+define wait_for_istio_control_plane
+	$(call wait_for_deployment,istio-system,istio-citadel)
+	$(call wait_for_deployment,istio-system,istio-galley)
+	$(call wait_for_deployment,istio-system,istio-policy)
+	$(call wait_for_deployment,istio-system,istio-pilot)
+	$(call wait_for_deployment,istio-system,istio-sidecar-injector)
+	$(call wait_for_deployment,istio-system,istio-telemetry)
+endef
 init-nginx:
 	cp policy/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf
 	sudo nginx -s stop; sudo nginx
@@ -39,10 +58,10 @@ helm-install:
 	brew install kubernetes-helm
 ## check mtls status
 show-mtls:
-	./istio-1.0.1/bin/istioctl authn tls-check
+	./istio-1.1.5/bin/istioctl authn tls-check
 ## show proxy synchronization status
 proxy-status:
-	./istio-1.0.1/bin/istioctl proxy-status
+	./istio-1.1.5/bin/istioctl proxy-status
 ## label namespace
 label-namespace:
 	# kubectl create namespace development
@@ -50,7 +69,7 @@ label-namespace:
 	kubectl get namespace -L istio-injection
 ## initialise kubernetes
 initialise:
-	curl -L https://git.io/getLatestIstio | sh -
+	cd deploy/charts; curl -L https://git.io/getLatestIstio | sh -
 	sh init_kube.sh
 ## deploy microservice v1
 deploy-v1:
@@ -95,40 +114,33 @@ install-ingress:
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/cloud-generic.yaml
 	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/provider/baremetal/service-nodeport.yaml
-access-observability:
-	kubectl apply -f policy/istio/observability/
 get-ingress-nodeport:
 	echo "export NODE_PORT="`kubectl -n ingress-nginx get service ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'`
 
 traffic:
-	siege -t 100 -r 10 -c 2 -v demo.microservice.local/color
+	siege -t 100 -r 10 -c 2 -v demo.local/color
 ## install istio control plane
-istio-install:
-	cd istio-1.0.1
-	helm upgrade --install --force istio istio-1.0.1/install/kubernetes/helm/istio --namespace istio-system \
-		--set ingress.enabled=true \
-		--set gateways.istio-ingressgateway.enabled=true \
-		--set gateways.istio-egressgateway.enabled=true \
-		--set gateways.istio-ingressgateway.type=NodePort \
-		--set gateways.istio-egressgateway.type=NodePort \
-		--set galley.enabled=true \
-		--set sidecarInjectorWebhook.enabled=true \
-		--set mixer.enabled=true \
-		--set prometheus.enabled=true \
-		--set global.hub=istio \
-		--set global.tag=1.0.1 \
-		--set global.imagePullPolicy=Always \
-		--set global.proxy.envoyStatsd.enabled=true \
-		--set global.mtls.enabled=true \
-		--set security.selfSigned=true \
-		--set global.enableTracing=true \
-		--set global.proxy.autoInject=disabled \
-		--set grafana.enabled=true \
-		--set kiali.enabled=true \
-		--set kiali.hub=kiali \
-		--set kiali.tag=latest \
-		--set tracing.enabled=true \
-		--timeout 600
+istio.install:
+	kubectl apply -f deploy/resources/istio/${ISTIO_VERSION}/service/mandatory/namespace.yaml
+	helm template deploy/charts/istio-${ISTIO_VERSION}/install/kubernetes/helm/istio-init --name istio-init --namespace istio-system > deploy/resources/istio/${ISTIO_VERSION}/istio-init.yaml
+	kubectl apply -f deploy/resources/istio/${ISTIO_VERSION}/istio-init.yaml
+	sleep 20
+	helm template deploy/charts/istio-${ISTIO_VERSION}/install/kubernetes/helm/istio --name istio --namespace istio-system  -f deploy/values/istio/${ISTIO_VERSION}/values.yaml > deploy/resources/istio/${ISTIO_VERSION}/istio.yaml
+	kubectl apply -f deploy/resources/istio/${ISTIO_VERSION}/istio.yaml
+	$(call wait_for_istio_control_plane, ${ISTIO_VERSION})
+istio.observability:
+	kubectl apply -f deploy/resources/policy/istio/observability/
+demo.deploy.v1:
+	kubectl apply -f deploy/resources/policy/microservice-v1/
+
+demo.deploy.v2:
+	kubectl apply -f deploy/resources/policy/microservice-v2/
+demo.deploy:
+	kubectl apply -f deploy/resources/policy/microservice-v2/
+	kubectl apply -f deploy/resources/policy/microservice-v1/
+	kubectl apply -f deploy/resources/policy/istio/base
+	kubectl apply -f deploy/resources/policy/istio/canary
+	kubectl apply -f deploy/resources/policy/istio/canary/vs.100-v1.yaml
 
 
 
