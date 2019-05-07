@@ -17,7 +17,7 @@ import java.util.Random;
 @RequestMapping(value="/color")
 public class Color {
     @Value("${version}")
-    public String version = "2.0";
+    public String version = "3.0";
 
     public String color = "red";
     private static final Log log = LogFactory.getLog(Color.class);
@@ -30,9 +30,12 @@ public class Color {
         Map<String, String> response = new HashMap<>();
         if (color.contains("red")) {
             try {
-                int max = 300; // maxmimum flux delay in ms
-                int min = 100; // maximum flux delay in ms
+                int max = 500; // maxmimum flux delay in ms
+                int min = 30; // maximum flux delay in ms
                 int ms = new Random().nextInt((max - min)) + min;
+                if (ms > 300) {
+                    throw new IllegalArgumentException("REQUEST_TOO_LONG");
+                }
                 Thread.sleep(ms);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block

@@ -8,6 +8,7 @@ RESET  := $(shell tput -Txterm sgr0)
 
 ISTIO_VERSION=1.1.5
 TARGET_MAX_CHAR_NUM=20
+ISTIO_VERSION=1.0.2
 ## install dependencies
 install: fetch.infra
 	yarn
@@ -58,10 +59,10 @@ helm-install:
 	brew install kubernetes-helm
 ## check mtls status
 show-mtls:
-	./istio-1.1.5/bin/istioctl authn tls-check
+	./deploy/charts/istio-${ISTIO_VERSION}/bin/istioctl authn tls-check
 ## show proxy synchronization status
 proxy-status:
-	./istio-1.1.5/bin/istioctl proxy-status
+	./deploy/charts/istio-${ISTIO_VERSION}/bin/istioctl proxy-status
 ## label namespace
 label-namespace:
 	# kubectl create namespace development
@@ -73,23 +74,29 @@ initialise:
 	sh init_kube.sh
 ## deploy microservice v1
 deploy-v1:
-	kubectl apply -f policy/microservice-v1/
+	kubectl apply -f policy/microservice-a-v1/
 ## deploy microservice v2
 deploy-v2:
-	kubectl apply -f policy/microservice-v2/
+	kubectl apply -f policy/microservice-a-v2/
+## deploy microservice v3
+deploy-v3:
+	kubectl apply -f policy/microservice-a-v3/
+
 ## delete microservice-related resources
 clean:
-	kubectl --ignore-not-found=true delete -f policy/microservice-v1/
-	kubectl --ignore-not-found=true delete -f policy/microservice-v2/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v1/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v2/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v3/
 	kubectl --ignore-not-found=true delete -f policy/istio/base
 	kubectl --ignore-not-found=true delete -f policy/istio/canary
 ## delete all resources
 clean-all:
-	kubectl --ignore-not-found=true delete -f policy/microservice-v1/
-	kubectl --ignore-not-found=true delete -f policy/microservice-v2/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v1/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v2/
+	kubectl --ignore-not-found=true delete -f policy/microservice-a-v3/
 	kubectl --ignore-not-found=true delete -f policy/istio/base
 	kubectl --ignore-not-found=true delete -f policy/istio/canary
-	kubectl --ignore-not-found=true delete -f istio-1.0.1/install/kubernetes/helm/istio/templates/crds.yaml
+	kubectl --ignore-not-found=true delete -f istio-${ISTIO_VERSION}/install/kubernetes/helm/istio/templates/crds.yaml
 	helm del --purge istio
 	kubectl -n istio-system delete job --all
 	kubectl delete namespace istio-system
@@ -98,6 +105,12 @@ microservice-policy:
 	kubectl apply -f policy/istio/base
 	kubectl apply -f policy/istio/canary
 	kubectl apply -f policy/istio/canary/vs.100-v1.yaml
+## enable-retries
+retry.enable:
+	kubectl apply -f policy/istio/canary/vs.90-v1-with-retry.yaml
+## disable-retries
+retry.disable:
+	kubectl apply -f policy/istio/canary/vs.90-v1.yaml
 ## reapply istio policies
 refresh-policy:
 	kubectl --ignore-not-found=true delete -f policy/istio/base
@@ -118,6 +131,7 @@ get-ingress-nodeport:
 	echo "export NODE_PORT="`kubectl -n ingress-nginx get service ingress-nginx -o jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'`
 
 traffic:
+	siege -t 1H -r 2 --delay 0.1 -c 2 -v demo.microservice.local/color
 	siege -t 100 -r 10 -c 2 -v demo.local/color
 ## install istio control plane
 istio.install:
