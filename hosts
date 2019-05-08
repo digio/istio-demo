@@ -1,1 +1,1 @@
-127.0.0.1   tracing.local demo.microservice.local grafana.local kiali.local 
+127.0.0.1   webapp.demo api.demo grafana.demo kiali.demo tracing.demo

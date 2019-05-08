@@ -15,13 +15,13 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.18.0",
-    "lodash": "^4.17.10",
-    "marked": "^0.5.0",
+    "lodash": "^4.17.11",
+    "marked": "^0.6.2",
     "normalize-css": "^2.3.1",
     "normalize.css": "^7.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "spectacle": "^5.1.0",
+    "spectacle": "^5.5.0",
     "spectacle-code-slide": "^0.5.2",
     "spectacle-renderer": "^0.0.3",
     "spectacle-terminal": "^0.5.0",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-eslint": "^8.0.1",
     "babel-loader": "^7.1.2",
     "babel-plugin-react-transform": "^3.0.0",
@@ -45,7 +45,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-runtime": "^6.26.0",
     "cross-env": "^5.1.0",
-    "css-loader": "^0.28.7",
+    "css-loader": "^2.1.1",
     "eslint": "^4.9.0",
     "eslint-config-formidable": "^3.0.0",
     "eslint-plugin-filenames": "^1.2.0",
@@ -56,7 +56,7 @@
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^4.0.0-beta.2",
     "is-buffer": "^1.1.5",
-    "markdown-loader": "^2.0.1",
+    "markdown-loader": "^5.0.0",
     "node-libs-browser": "^2.0.0",
     "raw-loader": "^0.5.1",
     "react-hot-loader": "^3.1.1",
@@ -67,7 +67,7 @@
     "surge": "latest",
     "url-loader": "^0.6.2",
     "webpack-dev-middleware": "^1.12.0",
-    "webpack-dev-server": "^2.9.3",
+    "webpack-dev-server": "^3.3.1",
     "webpack-hot-middleware": "^2.20.0"
   }
 }

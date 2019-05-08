@@ -11,7 +11,7 @@ A basic example of implementing ingress into an Istio service mesh, with a demon
   - [Getting Started](#getting-started)
     - [install dependencies](#install-dependencies)
     - [Resolution](#resolution)
-    - [Local CORS](#local-cors)
+    - [Install Demo](#install-demo)
     - [Install Istio](#install-istio)
     - [Deploy Example Microservice](#deploy-example-microservice)
     - [Observability](#observability)
@@ -51,29 +51,21 @@ make install
 ### Resolution
 
 Add the following to your /etc/hosts to faciliate domain resolution which will be
-used for requesting content from the service mesh, as well as the `nginx-ingress-controller`:
+used for requesting content from the service mesh, running on your local machine within docker-for-desktop.
 
 ```text
 ...
-127.0.0.1 jaeger.demo grafana.demo kiali.demo api.demo
+127.0.0.1   webapp.demo api.demo grafana.demo kiali.demo tracing.demo
 ...
 ```
 
-### Local CORS
+### Install Demo
 
-In order to run the Istio demo we need to run a series of installs and deployments within a kubernetes cluster. This is achieved through the `Makefile` in this repo.
-We must also run a reverse proxy to faciliate wrapping both the `webapp` and `api` under one origin, this is to avoid CORS limitations.
-
-The configuration for this can be found in this repo [here](policy/nginx/nginx.conf). This can be installed and configurd with the following command:
+The end-to-end install can be started by running:
 
 ```bash
-make init-nginx
+make install.demo
 ```
-
-The end-state configuration should allow for both the web-app (presentation) and microservice to be available on `localhost:8080`. the endpoints would be:
-
-- `localhost:8080/` - webapp
-- `localhost:8080/api/` - microservice
 
 ### Install Istio
 
@@ -104,14 +96,14 @@ The observability tooling such as Jaeger, Grafana, Prometheus, and Kiali will be
 This can be achieved with the following make command:
 
 ```bash
-make istio.observability 
+make istio.observability
 ```
 If you've added the required `/etc/hosts` configuration. These services will be available at the the following `${HOSTNAME}:${NODE_PORT}`. Example:
 
 - [http://grafana.demo](http://grafana.demo)
 - [http://tracing.demo](http://tracing.demo)
 - [http://kiali.demo](http://kiali.demo)
-- [http://demo.demo](http://kiali.demo)
+- [http://webapp.demo](http://webapp.demo)
 
 ### Generate Traffic
 
