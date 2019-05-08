@@ -15,7 +15,7 @@ install: fetch.infra
 	sh init_kube.sh
 fetch.infra:
 ifeq (,$(wildcard istio-${ISTIO_VERSION}))
-	curl -L https://git.io/getLatestIstio | sh -
+	cd deploy/charts/; curl -L https://git.io/getLatestIstio | sh -
 endif
 
 define wait_for_ns_termination
@@ -72,24 +72,10 @@ initialise:
 	cd deploy/charts; curl -L https://git.io/getLatestIstio | sh -
 	sh init_kube.sh
 
-## delete microservice-related resources
-clean:
-	kubectl --ignore-not-found=true delete -f policy/microservice-a-v1/
-	kubectl --ignore-not-found=true delete -f policy/microservice-a-v2/
-	kubectl --ignore-not-found=true delete -f policy/microservice-a-v3/
-	kubectl --ignore-not-found=true delete -f policy/istio/base
-	kubectl --ignore-not-found=true delete -f policy/istio/canary
 ## delete all resources
-clean-all:
-	kubectl --ignore-not-found=true delete -f policy/microservice-a-v1/
-	kubectl --ignore-not-found=true delete -f policy/microservice-a-v2/
-	kubectl --ignore-not-found=true delete -f policy/microservice-a-v3/
-	kubectl --ignore-not-found=true delete -f policy/istio/base
-	kubectl --ignore-not-found=true delete -f policy/istio/canary
-	kubectl --ignore-not-found=true delete -f istio-${ISTIO_VERSION}/install/kubernetes/helm/istio/templates/crds.yaml
-	helm del --purge istio
-	kubectl -n istio-system delete job --all
-	kubectl delete namespace istio-system
+clean:
+	kubectl delete --ignore-not-found=true namespace istio-system
+	kubectl delete --ignore-not-found=true namespace development 
 ## microservice policy
 microservice-policy:
 	kubectl apply -f policy/istio/base
@@ -148,6 +134,11 @@ deploy.demo:
 	kubectl apply -f deploy/resources/policy/webapp/
 	kubectl apply -f deploy/resources/policy/istio/base
 	kubectl apply -f deploy/resources/policy/istio/canary/vs.100-v1.yaml
+	$(call wait_for_deployment,development,demo-microservice-v1)
+	$(call wait_for_deployment,development,demo-microservice-v2)
+	$(call wait_for_deployment,development,demo-microservice-v3)
+	$(call wait_for_deployment,development,webapp)
+install.demo: istio.install istio.observability deploy.demo
 
 
 

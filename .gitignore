@@ -3,6 +3,6 @@ istio-1*
 node_modules
 npm-debug.log
 dist
-/istio-*
+/istio-*/
 .gradle
 dist
